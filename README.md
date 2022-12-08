@@ -13,6 +13,7 @@ In order to run this project, you will need:
 - torch
 - numpy
 - diffusers
+- accelerate
 
 Installation
 To install the project, clone this repository and install the required packages:
