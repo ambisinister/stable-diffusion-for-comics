@@ -63,7 +63,7 @@ if __name__ == "__main__":
         ).to(device)
 
         image = pipe(prompt=args.prompt,
-                     init_image = init_image,
+                     image = init_image,
                      strength = args.strength,
                      guidance_scale = args.guidance_scale).images[0]
         

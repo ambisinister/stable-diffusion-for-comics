@@ -13,15 +13,25 @@ In order to run this project, you will need:
 - torch
 - numpy
 - diffusers
-- accelerate
+- accelerate (recommended)
+- nvidia-docker2 (if using docker)
+- git-lfs (if not using docker)
 
-Installation
+## Installation
+
 To install the project, clone this repository and install the required packages:
 
 ```
 $ git clone https://github.com/ambisinister/stable-diffusion-for-comics.git
 $ cd stable-diffusion-for-comics
 $ pip install -r requirements.txt
+```
+
+To build a docker image or to run locally, [accept the stable diffusion license agreement](https://huggingface.co/runwayml/stable-diffusion-v1-5) and then run the following commands
+
+```
+git lfs install
+git clone https://huggingface.co/runwayml/stable-diffusion-v1-5
 ```
 
 ## Usage
@@ -43,33 +53,43 @@ $ python diffusion.py --prompt "Godzilla eating a meatball sub" --img /path/to/i
 This will generate a new image based on the text prompt, starting from a source image instead of a random noise image.
 
 ## Docker Usage
-This project includes a Dockerfile which can be used to build a Docker image containing all of the required dependencies. To build the Docker image, run the following command from the root of the project directory:
+This project includes a Dockerfile which can be used to build a Docker image containing all of the required dependencies. To build the Docker image, run the following from the root of the project directory:
 
 ```
-$ docker build -t stable-diffusion .
+cd docker
+docker build -t stable-diffusion .
+cd ../
 ```
 
-This will create a Docker image with the tag "stable-diffusion". You can then run the image as a container with the following command:
+This will create a Docker image with the tag "stable-diffusion". **Note that this image differs from the one on docker hub, which contains the model, and is much heavier, compared to this one, which mounts a folder**
+
+You can then run the image as a container with the following command:
 
 ```
-$ docker run -it --rm stable-diffusion
+docker run --gpus all -it -v $(pwd):/app --rm --network=host -p 8888:8888 stable-diffusion
 ```
 
-This will start a new container based on the "stable-diffusion" image, and run the stable_diffusion.py script inside of it. You can pass any command line arguments to the script by appending them to the docker run command. For example, to run the algorithm on a specific input image and save the output to a specific path, you can use the following command:
+or, alternatively, with the provided script
 
 ```
-$ docker run -it --rm stable-diffusion python stable_diffusion.py --prompt "A superhero flying over the city" --img path/to/input_image.png --saveas path/to/output_image.png
+sh ./scripts/run_docker.sh
+```
+
+This will start a new container based on the "stable-diffusion" image, and place you in an interactive terminal. From there, you can run the notebook via jupyter lab, or you can run the script via diffusion.py
+
+If you are not interested in the interactive shell, you can pass any command line arguments to the script by appending them to the docker run command. For example, to run the algorithm on a specific input image and save the output to a specific path, you can use the following command:
+
+```
+docker run --gpus all -v $(pwd):/app --rm stable-diffusion python diffusion.py --prompt "A superhero flying over the city" --img path/to/input_image.png --saveas path/to/output_image.png
+```
+
+or, alternatively, with the provided script, which you will need to edit with paths to your files
+
+```
+sh ./scripts/diffuse.sh
 ```
 
 Note that the input_image and output_image paths should be specified with respect to the root of the project directory inside of the container.
-
-If you would like to access files on your host system from inside of the container, you can mount a volume using the -v flag. For example, to mount the current working directory on your host system to the /app directory inside of the container, you can use the following command:
-
-```
-$ docker run -it --rm -v "$(pwd)":/app stable-diffusion
-```
-
-This will allow you to access files in the current working directory on your host system from the /app directory inside of the container. You can then specify file paths with respect to this directory when running the diffusion.py script.
 
 ## Contribution
 If you would like to contribute to this project, please fork this repository and make any desired changes. Then, submit a pull request for review.
