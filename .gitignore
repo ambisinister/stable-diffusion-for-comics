@@ -2,3 +2,4 @@ stable-diffusion-v1-5/
 *.py#
 archive/**
 .ipynb_checkpoints/
+classes/

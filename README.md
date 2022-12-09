@@ -1,5 +1,7 @@
 # Stable Diffusion - Image Generation for Artists
 
+![](comic_example_output.png)
+
 This project aims to implement Stable Diffusion for image generation, in order to assist artists in iterating upon concepts more quickly.
 
 This project was built leveraging the Huggingface Diffusers library, which provides a flexible and easy-to-use implementation of stable diffusion. This allowed us to quickly and efficiently implement the algorithm, and focus on developing features and improvements specifically tailored to the needs of artists.
